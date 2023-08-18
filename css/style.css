@@ -1,0 +1,20 @@
+.carousel-caption {
+    font-size: 2em;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white; 
+    padding: 10px; 
+}
+
+.carousel-caption h2 {
+    margin-top: 20px;
+}
+
+.carousel-item img {
+    max-height: 400px;
+    width: 100%;
+    object-fit: cover;
+}

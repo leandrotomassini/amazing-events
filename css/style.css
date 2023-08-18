@@ -18,3 +18,12 @@
     width: 100%;
     object-fit: cover;
 }
+
+
+.navbar-brand {
+    margin-right: auto;
+}
+
+.navbar-nav {
+    margin-left: auto;
+}

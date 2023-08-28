@@ -40,6 +40,13 @@
   margin: 0 auto;
 }
 
+
+.table{
+  background-color: #121212 !important;
+}
+
+
+
 @media (min-width: 570px) {
   .card-info img {
     width: 300px;

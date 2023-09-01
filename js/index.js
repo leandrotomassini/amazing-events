@@ -34,8 +34,9 @@ const loadCategoriesAndCards = () => {
 
       // Agrega un evento change para detectar cambios en los checkboxes
       const checkbox = categoryCheckBox.querySelector("input");
+
       checkbox.addEventListener("change", () => {
-        filterCardsByCategory();
+        filterCardsByCategory("");
       });
     }
 
@@ -45,7 +46,7 @@ const loadCategoriesAndCards = () => {
       <div class="card mb-2 mr-2 align-self-center text-dark" style="width: 18rem;">
         <img src="${amazingEvent.image}" class="card-img-top" alt="${amazingEvent.name}">
         <div class="card-body d-flex flex-column justify-content-center">
-          <h5 class="card-title">${amazingEvent.name}</h5>
+          <h5 class="card-title main-title">${amazingEvent.name}</h5>
           <label>${amazingEvent.category}</label>
           <h5 class="card-title">${amazingEvent.date}</h5>
           <p class="card-text">${amazingEvent.description}</p>
@@ -58,21 +59,10 @@ const loadCategoriesAndCards = () => {
     // Agrega la tarjeta al contenedor de tarjetas
     cardsContent.appendChild(card);
   });
-
-  // Agrega un evento change al checkbox "Todos" para mostrar todas las tarjetas
-  const allCheckbox = document.querySelector(
-    "#categoryContent input[name='Todos']"
-  );
-
-  if (allCheckbox) {
-    allCheckbox.addEventListener("change", () => {
-      filterCardsByCategory();
-    });
-  }
 };
 
 // Función para filtrar tarjetas por categoría
-const filterCardsByCategory = () => {
+const filterCardsByCategory = (searchTerm) => {
   const checkboxes = document.querySelectorAll(
     "#categoryContent input[type=checkbox]:checked"
   );
@@ -85,11 +75,16 @@ const filterCardsByCategory = () => {
 
   cards.forEach((card) => {
     const cardCategory = card.querySelector("label").textContent.trim();
+    const cardTitle = card
+      .querySelector(".main-title")
+      .textContent.trim()
+      .toLowerCase();
+    searchTerm = searchTerm.trim().toLowerCase();
 
     if (
       selectedCategories.length === 0 ||
-      selectedCategories.includes("Todos") ||
-      selectedCategories.includes(cardCategory)
+      (selectedCategories.includes(cardCategory) &&
+        cardTitle.includes(searchTerm))
     ) {
       card.style.display = "block";
     } else {
@@ -105,13 +100,13 @@ const setupSearchBoxes = () => {
 
   searchInputs.forEach((searchInput) => {
     searchInput.addEventListener("input", () => {
-      console.log("Input value: " + searchInput.value);
+      filterCardsByCategory(searchInput.value);
     });
 
     searchInput.addEventListener("keydown", (e) => {
       if (e.key === "Enter") {
         e.preventDefault();
-        console.log("Enter pressed in input: " + searchInput.value);
+        filterCardsByCategory(searchInput.value);
       }
     });
   });
@@ -121,7 +116,7 @@ const setupSearchBoxes = () => {
       e.preventDefault();
       const parentForm = searchButton.closest("form");
       const input = parentForm.querySelector("input[type='search']");
-      console.log("Button clicked in input: " + input.value);
+      filterCardsByCategory(input.value);
     });
   });
 };

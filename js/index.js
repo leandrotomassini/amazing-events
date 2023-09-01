@@ -1,6 +1,7 @@
 const cardsContent = document.querySelector("#cardsContent");
 
-function createCard(amazingEvent) {
+const createCard = (amazingEvent) => {
+
   const card = document.createElement("div");
 
   card.innerHTML = `
@@ -17,10 +18,8 @@ function createCard(amazingEvent) {
   `;
 
   cardsContent.appendChild(card);
-}
+};
 
 window.onload = () => {
-  for (const amazingEvent of data.events) {
-      createCard(amazingEvent);
-  }
+  data.events.forEach(createCard);
 };

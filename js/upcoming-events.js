@@ -1,6 +1,6 @@
 const cardsContent = document.querySelector("#cardsContent");
 
-function createCard(amazingEvent) {
+const createCard = (amazingEvent) => {
   const card = document.createElement("div");
 
   card.innerHTML = `
@@ -17,14 +17,8 @@ function createCard(amazingEvent) {
   `;
 
   cardsContent.appendChild(card);
-}
+};
 
 window.onload = () => {
-  const currentDate = data.currentDate;
-
-  for (const amazingEvent of data.events) {
-    if (new Date(amazingEvent.date) > new Date(currentDate)) {
-      createCard(amazingEvent);
-    }
-  }
+  data.events.forEach(createCard);
 };

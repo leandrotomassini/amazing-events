@@ -98,7 +98,36 @@ const filterCardsByCategory = () => {
   });
 };
 
+// Función para agregar manejo de eventos en las cajas de búsqueda
+const setupSearchBoxes = () => {
+  const searchInputs = document.querySelectorAll("input[type='search']");
+  const searchButtons = document.querySelectorAll("button[type='submit']");
+
+  searchInputs.forEach((searchInput) => {
+    searchInput.addEventListener("input", () => {
+      console.log("Input value: " + searchInput.value);
+    });
+
+    searchInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        console.log("Enter pressed in input: " + searchInput.value);
+      }
+    });
+  });
+
+  searchButtons.forEach((searchButton) => {
+    searchButton.addEventListener("click", (e) => {
+      e.preventDefault();
+      const parentForm = searchButton.closest("form");
+      const input = parentForm.querySelector("input[type='search']");
+      console.log("Button clicked in input: " + input.value);
+    });
+  });
+};
+
 // Función principal al cargar la página
 document.addEventListener("DOMContentLoaded", () => {
   loadCategoriesAndCards();
+  setupSearchBoxes();
 });

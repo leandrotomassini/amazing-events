@@ -36,7 +36,7 @@ const loadCategoriesAndCards = () => {
       const checkbox = categoryCheckBox.querySelector("input");
 
       checkbox.addEventListener("change", () => {
-        filterCardsByCategory("");
+        filterCards("");
       });
     }
 
@@ -61,8 +61,8 @@ const loadCategoriesAndCards = () => {
   });
 };
 
-// Función para filtrar tarjetas por categoría
-const filterCardsByCategory = (searchTerm) => {
+// Función para filtrar tarjetas por categoría y búsqueda
+const filterCards = (searchTerm) => {
   const checkboxes = document.querySelectorAll(
     "#categoryContent input[type=checkbox]:checked"
   );
@@ -82,9 +82,9 @@ const filterCardsByCategory = (searchTerm) => {
     searchTerm = searchTerm.trim().toLowerCase();
 
     if (
-      selectedCategories.length === 0 ||
-      (selectedCategories.includes(cardCategory) &&
-        cardTitle.includes(searchTerm))
+      (selectedCategories.length === 0 ||
+        selectedCategories.includes(cardCategory)) &&
+      (searchTerm === "" || cardTitle.includes(searchTerm))
     ) {
       card.style.display = "block";
     } else {
@@ -100,13 +100,13 @@ const setupSearchBoxes = () => {
 
   searchInputs.forEach((searchInput) => {
     searchInput.addEventListener("input", () => {
-      filterCardsByCategory(searchInput.value);
+      filterCards(searchInput.value);
     });
 
     searchInput.addEventListener("keydown", (e) => {
       if (e.key === "Enter") {
         e.preventDefault();
-        filterCardsByCategory(searchInput.value);
+        filterCards(searchInput.value);
       }
     });
   });
@@ -116,7 +116,7 @@ const setupSearchBoxes = () => {
       e.preventDefault();
       const parentForm = searchButton.closest("form");
       const input = parentForm.querySelector("input[type='search']");
-      filterCardsByCategory(input.value);
+      filterCards(input.value);
     });
   });
 };

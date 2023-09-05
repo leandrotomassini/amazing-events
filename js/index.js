@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Variables globales
   let cardsContent;
   let categoryContent;
-  let noResultsMessage; 
+  let noResultsMessage;
 
   // Función para cargar las categorías y las tarjetas de eventos
   const loadCategoriesAndCards = () => {
@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
             <h5 class="card-title">${amazingEvent.date}</h5>
             <p class="card-text">${amazingEvent.description}</p>
             <p>$${amazingEvent.price}</p>
-            <a href="details.html" class="btn btn-dark">Más detalles</a>
+            <a href="details.html?eventId=${amazingEvent._id}" class="btn btn-dark" data-event-id="${amazingEvent._id}">Más detalles</a>
           </div>
         </div>
       `;
@@ -96,7 +96,7 @@ document.addEventListener("DOMContentLoaded", () => {
         (searchTerm === "" || cardTitle.includes(searchTerm))
       ) {
         card.style.display = "block";
-        resultsExist = true; 
+        resultsExist = true;
       } else {
         card.style.display = "none";
       }

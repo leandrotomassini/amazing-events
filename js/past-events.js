@@ -5,29 +5,37 @@ document.addEventListener("DOMContentLoaded", () => {
   let categoryContent;
   let noResultsMessage;
 
-  // Función para cargar las categorías y las tarjetas de eventos futuros
-  const loadCategoriesAndCards = () => {
+  // Función para cargar las categorías y las tarjetas de eventos
+  const loadCategoriesAndCards = async () => {
     cardsContent = document.querySelector("#cardsContent");
     categoryContent = document.querySelector("#categoryContent");
     noResultsMessage = document.querySelector("#noResultsMessage");
 
     const categories = [];
-    const currentDate = new Date(data.currentDate);
 
     // Limpia el contenido actual de los contenedores
     cardsContent.innerHTML = "";
     categoryContent.innerHTML = "";
 
-    data.events.forEach((amazingEvent) => {
-      const eventDate = new Date(amazingEvent.date);
+    try {
+      // Realiza una solicitud GET para obtener los datos desde la API
+      const response = await fetch("https://mindhub-xj03.onrender.com/api/amazing");
 
-      // Verifica si la fecha del evento es anterior a la fecha actual
-      if (eventDate < currentDate) {
-        // Verifica si la categoría ya existe en el array de categorías
+      if (!response.ok) {
+        throw new Error(`Error al cargar los datos: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (!data || !Array.isArray(data.events)) {
+        throw new Error("Los datos no son válidos.");
+      }
+
+      data.events.forEach((amazingEvent) => {
+        // Crea el checkbox de categoría
         if (!categories.includes(amazingEvent.category)) {
           categories.push(amazingEvent.category);
 
-          // Crea el checkbox de categoría
           const categoryCheckBox = document.createElement("div");
           categoryCheckBox.innerHTML = `
             <label class="form-check-label p-4">
@@ -51,11 +59,35 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Crea la tarjeta de evento
         createCard(amazingEvent);
-      }
-    });
+      });
 
-    // Llama a la función de filtrado al cargar las tarjetas
-    filterCards("");
+      // Llama a la función de filtrado al cargar las tarjetas
+      filterCards("");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  // Función para crear una tarjeta de evento
+  const createCard = (amazingEvent) => {
+    // Crea la tarjeta de evento
+    const card = document.createElement("div");
+    card.innerHTML = `
+      <div class="card mb-2 mr-2 align-self-center text-dark" style="width: 18rem;">
+        <img src="${amazingEvent.image}" class="card-img-top" alt="${amazingEvent.name}">
+        <div class="card-body d-flex flex-column justify-content-center">
+          <h5 class="card-title main-title">${amazingEvent.name}</h5>
+          <label>${amazingEvent.category}</label>
+          <h5 class="card-title">${amazingEvent.date}</h5>
+          <p class="card-text">${amazingEvent.description}</p>
+          <p>$${amazingEvent.price}</p>
+          <a href="details.html?eventId=${amazingEvent._id}" class="btn btn-dark" data-event-id="${amazingEvent._id}">Más detalles</a>
+        </div>
+      </div>
+    `;
+
+    // Agrega la tarjeta al contenedor de tarjetas
+    cardsContent.appendChild(card);
   };
 
   // Función para filtrar tarjetas por categoría y búsqueda
@@ -98,28 +130,6 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
       noResultsMessage.style.display = "none";
     }
-  };
-
-  // Función para crear una tarjeta de evento
-  const createCard = (amazingEvent) => {
-    // Crea la tarjeta de evento
-    const card = document.createElement("div");
-    card.innerHTML = `
-      <div class="card mb-2 mr-2 align-self-center text-dark" style="width: 18rem;">
-        <img src="${amazingEvent.image}" class="card-img-top" alt="${amazingEvent.name}">
-        <div class="card-body d-flex flex-column justify-content-center">
-          <h5 class="card-title main-title">${amazingEvent.name}</h5>
-          <label>${amazingEvent.category}</label>
-          <h5 class="card-title">${amazingEvent.date}</h5>
-          <p class="card-text">${amazingEvent.description}</p>
-          <p>$${amazingEvent.price}</p>
-          <a href="details.html?eventId=${amazingEvent._id}" class="btn btn-dark" data-event-id="${amazingEvent._id}">Más detalles</a>
-        </div>
-      </div>
-    `;
-
-    // Agrega la tarjeta al contenedor de tarjetas
-    cardsContent.appendChild(card);
   };
 
   // Función para agregar manejo de eventos en las cajas de búsqueda

@@ -6,56 +6,73 @@ document.addEventListener("DOMContentLoaded", () => {
   let noResultsMessage;
 
   // Función para cargar las categorías y las tarjetas de eventos futuros
-  const loadCategoriesAndCards = () => {
+  const loadCategoriesAndCards = async () => {
     cardsContent = document.querySelector("#cardsContent");
     categoryContent = document.querySelector("#categoryContent");
     noResultsMessage = document.querySelector("#noResultsMessage");
 
     const categories = [];
-    const currentDate = new Date(data.currentDate);
+    const currentDate = new Date();
 
     // Limpia el contenido actual de los contenedores
     cardsContent.innerHTML = "";
     categoryContent.innerHTML = "";
 
-    data.events.forEach((amazingEvent) => {
-      const eventDate = new Date(amazingEvent.date);
+    try {
+      // Realiza una solicitud GET para obtener los datos desde la API
+      const response = await fetch("https://mindhub-xj03.onrender.com/api/amazing");
 
-      // Verifica si la fecha del evento es posterior a la fecha actual
-      if (eventDate > currentDate) {
-        // Verifica si la categoría ya existe en el array de categorías
-        if (!categories.includes(amazingEvent.category)) {
-          categories.push(amazingEvent.category);
-
-          // Crea el checkbox de categoría
-          const categoryCheckBox = document.createElement("div");
-          categoryCheckBox.innerHTML = `
-            <label class="form-check-label p-4">
-              <div class="d-flex align-items-center">
-                <input type="checkbox" class="form-check-input" name="${amazingEvent.category}">
-                <span class="mt-1">${amazingEvent.category}</span>
-              </div>
-            </label>
-          `;
-
-          // Agrega el checkbox al contenedor de categorías
-          categoryContent.appendChild(categoryCheckBox);
-
-          // Agrega un evento change para detectar cambios en los checkboxes
-          const checkbox = categoryCheckBox.querySelector("input");
-
-          checkbox.addEventListener("change", () => {
-            filterCards("");
-          });
-        }
-
-        // Crea la tarjeta de evento
-        createCard(amazingEvent);
+      if (!response.ok) {
+        throw new Error(`Error al cargar los datos: ${response.status}`);
       }
-    });
 
-    // Llama a la función de filtrado al cargar las tarjetas
-    filterCards("");
+      const data = await response.json();
+
+      if (!data || !Array.isArray(data.events)) {
+        throw new Error("Los datos no son válidos.");
+      }
+
+      data.events.forEach((amazingEvent) => {
+        const eventDate = new Date(amazingEvent.date);
+
+        // Verifica si la fecha del evento es posterior a la fecha actual
+        if (eventDate > currentDate) {
+          // Verifica si la categoría ya existe en el array de categorías
+          if (!categories.includes(amazingEvent.category)) {
+            categories.push(amazingEvent.category);
+
+            // Crea el checkbox de categoría
+            const categoryCheckBox = document.createElement("div");
+            categoryCheckBox.innerHTML = `
+              <label class="form-check-label p-4">
+                <div class="d-flex align-items-center">
+                  <input type="checkbox" class="form-check-input" name="${amazingEvent.category}">
+                  <span class="mt-1">${amazingEvent.category}</span>
+                </div>
+              </label>
+            `;
+
+            // Agrega el checkbox al contenedor de categorías
+            categoryContent.appendChild(categoryCheckBox);
+
+            // Agrega un evento change para detectar cambios en los checkboxes
+            const checkbox = categoryCheckBox.querySelector("input");
+
+            checkbox.addEventListener("change", () => {
+              filterCards("");
+            });
+          }
+
+          // Crea la tarjeta de evento
+          createCard(amazingEvent);
+        }
+      });
+
+      // Llama a la función de filtrado al cargar las tarjetas
+      filterCards("");
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   // Función para filtrar tarjetas por categoría y búsqueda

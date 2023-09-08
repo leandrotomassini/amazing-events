@@ -137,7 +137,7 @@ fetch(url)
       pastEventsTableBody.appendChild(newRow);
     }
 
-    // Actualizar las celdas de información con los nombres de eventos
+    // Actualizar la tabla de información con los nombres de eventos
     document.getElementById("highestAssistanceCell").textContent = eventWithHighestAssistance ? eventWithHighestAssistance.name : "N/A";
     document.getElementById("lowestAssistanceCell").textContent = eventWithLowestAssistance ? eventWithLowestAssistance.name : "N/A";
     document.getElementById("largestCapacityCell").textContent = eventWithLargestCapacity ? eventWithLargestCapacity.name : "N/A";

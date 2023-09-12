@@ -23,53 +23,62 @@ fetch(url)
     // Recorro la lista de eventos
     for (const event of events) {
       // Calculo el porcentaje de asistencia para cada evento
-      let assistancePercentage = (event.assistance * 100) / event.capacity;
+      const assistancePercentage = (event.assistance / event.capacity) * 100;
+
+      // Actualizo los eventos con la asistencia más alta y más baja
+      if (assistancePercentage > highestAssistancePercentage) {
+        highestAssistancePercentage = assistancePercentage;
+        eventWithHighestAssistance = event;
+      }
+
+      if (assistancePercentage < lowestAssistancePercentage) {
+        lowestAssistancePercentage = assistancePercentage;
+        eventWithLowestAssistance = event;
+      }
+
+      if (event.capacity > largestEventCapacity) {
+        largestEventCapacity = event.capacity;
+        eventWithLargestCapacity = event;
+      }
+
+      // Obtengo la categoría y la fecha del evento
+      const category = event.category;
+
+      // Obtengo el precio y la asistencia del evento, asegurándome de que sean números válidos
+      const price = event.price || 0;
+      const assistance = event.assistance || 0;
+      const estimate = event.estimate || 0;
+
+
+      // Calculo los ingresos del evento
+      let eventRevenues = price * assistance;
+
 
       // Verifico si el evento es futuro o pasado en función de la fecha
       if (event.date > data.currentDate) {
+
+        eventRevenues = price * estimate;
+
         // Si es un evento futuro, actualizo las estadísticas de categoría para eventos futuros
-        if (!upcomingCategoryStatistics[event.category]) {
-          upcomingCategoryStatistics[event.category] = {
+        if (!upcomingCategoryStatistics[category]) {
+          upcomingCategoryStatistics[category] = {
             totalRevenues: 0,
             totalAssistance: 0,
           };
         }
 
-        // Utilizo "estimate" para calcular los ingresos y la asistencia para eventos futuros
-        const estimatedAssistancePercentage = (event.estimate * 100) / event.capacity;
-        const estimatedRevenues = event.price * event.estimate;
-
-        upcomingCategoryStatistics[event.category].totalRevenues += estimatedRevenues;
-        upcomingCategoryStatistics[event.category].totalAssistance += event.estimate;
-
-        // Actualizo los eventos con la asistencia más alta y más baja
-        if (estimatedAssistancePercentage > highestAssistancePercentage) {
-          highestAssistancePercentage = estimatedAssistancePercentage;
-          eventWithHighestAssistance = event;
-        }
-
-        if (estimatedAssistancePercentage < lowestAssistancePercentage) {
-          lowestAssistancePercentage = estimatedAssistancePercentage;
-          eventWithLowestAssistance = event;
-        }
-
-        if (event.capacity > largestEventCapacity) {
-          largestEventCapacity = event.capacity;
-          eventWithLargestCapacity = event;
-        }
+        upcomingCategoryStatistics[category].totalRevenues += eventRevenues;
+        upcomingCategoryStatistics[category].totalAssistance += estimate;
       } else {
         // Si es un evento pasado, actualizo las estadísticas de categoría para eventos pasados
-        if (!pastCategoryStatistics[event.category]) {
-          pastCategoryStatistics[event.category] = {
+        if (!pastCategoryStatistics[category]) {
+          pastCategoryStatistics[category] = {
             totalRevenues: 0,
             totalAssistance: 0,
           };
         }
-
-        const revenues = event.price * event.assistance;
-
-        pastCategoryStatistics[event.category].totalRevenues += revenues;
-        pastCategoryStatistics[event.category].totalAssistance += event.assistance;
+        pastCategoryStatistics[category].totalRevenues += eventRevenues;
+        pastCategoryStatistics[category].totalAssistance += assistance;
       }
     }
 

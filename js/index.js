@@ -68,7 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
               <h5 class="card-title">${amazingEvent.date}</h5>
               <p class="card-text">${amazingEvent.description}</p>
               <p>$${amazingEvent.price}</p>
-              <a href="details.html?eventId=${amazingEvent._id}" class="btn btn-dark" data-event-id="${amazingEvent._id}">Más detalles</a>
+              <a href="details.html?eventId=${amazingEvent._id}" class="btn btn-dark" data-event-id="${amazingEvent._id}">More details</a>
             </div>
           </div>
         `;

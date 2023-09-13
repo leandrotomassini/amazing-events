@@ -29,6 +29,10 @@
   margin-left: auto;
 }
 
+.card{
+  height: 500px;
+}
+
 .card-info {
   border-radius: 5px;
   margin: 0 auto;
